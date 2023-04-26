@@ -1,3 +1,4 @@
+from copy import copy
 from typing import TypeVar, Any
 
 import numpy as np
@@ -86,26 +87,31 @@ def create_decision_tree(dataset, labels: list) -> dict[str, dict | Any]:
     del (labels[best_feature_idx])  # 删除已经访问过的特征
     positive_subset, negative_subset = get_subsets(dataset, best_feature_idx, best_value)  # 按最优划分点划分为两个子集
 
-    decision_tree[best_feature][best_value] = create_decision_tree(positive_subset, labels)
-    decision_tree[best_feature]['others'] = create_decision_tree(negative_subset, labels)
+    decision_tree[best_feature][best_value] = create_decision_tree(positive_subset, copy(labels))
+    decision_tree[best_feature]['others'] = create_decision_tree(negative_subset, copy(labels))
 
     return decision_tree
 
 
 def test():
-    """
-    简易数据集：
-    [sample * n]:sample -> [first, second, (first + second) 奇数为 1,偶数为 2]
-    """
+    dataset = [['youth', 'no', 'no', 'just so-so', 'no'],
+               ['youth', 'no', 'no', 'good', 'no'],
+               ['youth', 'yes', 'no', 'good', 'yes'],
+               ['youth', 'yes', 'yes', 'just so-so', 'yes'],
+               ['youth', 'no', 'no', 'just so-so', 'no'],
+               ['midlife', 'no', 'no', 'just so-so', 'no'],
+               ['midlife', 'no', 'no', 'good', 'no'],
+               ['midlife', 'yes', 'yes', 'good', 'yes'],
+               ['midlife', 'no', 'yes', 'great', 'yes'],
+               ['midlife', 'no', 'yes', 'great', 'yes'],
+               ['geriatric', 'no', 'yes', 'great', 'yes'],
+               ['geriatric', 'no', 'yes', 'good', 'yes'],
+               ['geriatric', 'yes', 'no', 'good', 'yes'],
+               ['geriatric', 'yes', 'no', 'great', 'yes'],
+               ['geriatric', 'no', 'no', 'just so-so', 'no']]
+    features = ['age', 'work', 'house', 'credit']
 
-    dataset = [[1, 1, 2],
-               [1, 2, 1],
-               [2, 2, 2],
-               [2, 1, 1],]
-
-    arr = np.array(dataset)
-
-    print(create_decision_tree(arr, ['first', 'second']))
+    print(create_decision_tree(np.array(dataset, dtype=str), features))
 
 
 if __name__ == '__main__':
