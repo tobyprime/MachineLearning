@@ -96,7 +96,7 @@ def create_tree(dataset: ndarray, labels: list[str]) -> dict:
     if len(labels) == 0:  # 所有特征都遍历完了
         return max(list(classes), key=list(classes).count)  # 返回出现次数最多的类别
 
-    # 选择最好的分割特征
+    # 选择最优分割特征
     best_label = get_best_seg_feature(dataset, labels)
     best_label_id = labels.index(best_label)
 
